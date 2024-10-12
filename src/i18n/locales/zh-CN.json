@@ -1,0 +1,12 @@
+{
+    "hello": "你好",
+    "welcome": "欢迎使用 Vue 3 + i18n",
+    "route": {
+      "home": {
+        "title": "首页 - 我的 Vue 应用"
+      },
+      "about": {
+        "title": "关于我们 - 我的 Vue 应用"
+      }
+    }
+  }

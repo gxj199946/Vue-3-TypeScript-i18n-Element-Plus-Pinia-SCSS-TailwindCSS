@@ -1,0 +1,1 @@
+{"root":["./src/global.d.ts","./src/main.ts","./src/vite-env.d.ts","./src/i18n/index.ts","./src/stores/counter.ts","./src/stores/languagestore.ts","./src/stores/themestore.ts","./src/utils/languageutils.ts","./src/app.vue","./src/components/helloworld.vue","./src/components/languageswitch.vue","./src/components/themetoggle.vue"],"errors":true,"version":"5.6.3"}

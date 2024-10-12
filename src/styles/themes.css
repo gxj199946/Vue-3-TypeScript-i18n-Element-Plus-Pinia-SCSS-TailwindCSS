@@ -1,0 +1,26 @@
+:root {
+    /* 亮色主题变量 */
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --primary-color: #3490dc;
+    --secondary-color: #ffed4a;
+    --border-color: #e2e8f0;
+  }
+  
+  .dark {
+    /* 暗色主题变量 */
+    --bg-color: #1a202c;
+    --text-color: #f7fafc;
+    --primary-color: #63b3ed;
+    --secondary-color: #faf089;
+    --border-color: #4a5568;
+  }
+  
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* 你可以在这里添加更多使用这些变量的全局样式 */
+  
