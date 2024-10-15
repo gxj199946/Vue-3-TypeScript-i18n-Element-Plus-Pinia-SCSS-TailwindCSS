@@ -1,6 +1,7 @@
 <template>
-  <div class="language-selector">
-    <el-popover
+  <div class="language-selector ">
+    <div class="text-gray-900 dark:text-white">
+      <el-popover
       v-model:visible="popoverVisible"
       placement="bottom"
       :width="200"
@@ -8,7 +9,7 @@
       popper-class="language-popover"
     >
       <template #reference>
-        <div class="language-trigger" @click="togglePopover">
+        <div class="language-trigger " @click="togglePopover">
           <span class="language-icon"></span>
           {{ currentLanguageLabel }}
           <i class="el-icon-arrow-down el-icon--right"></i>
@@ -27,6 +28,8 @@
         </div>
       </div>
     </el-popover>
+    </div>
+    
   </div>
 </template>
 
@@ -84,7 +87,7 @@ onMounted(() => {
   cursor: pointer;
   display: flex;
   align-items: center;
-  color: #606266;
+  // color: #606266;
   font-size: 14px;
 
   &:hover {

@@ -8,6 +8,7 @@
         <h1 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
           {{ title }}
         </h1>
+        
         <!-- 语言切换组件 -->
       <LanguageSwitch />
         <!-- 主题切换组件 -->

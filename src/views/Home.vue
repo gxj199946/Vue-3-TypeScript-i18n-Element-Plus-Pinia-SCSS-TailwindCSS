@@ -25,7 +25,7 @@ onMounted(async () => {
     <ul>
       <li v-for="user in users" :key="user.id">{{ user.title }}</li>
     </ul>
-    <el-icon><Edit /></el-icon>
+     <el-icon><Edit /></el-icon>
   <el-icon><Share /></el-icon>
   <el-icon><Delete /></el-icon>
   </div>
