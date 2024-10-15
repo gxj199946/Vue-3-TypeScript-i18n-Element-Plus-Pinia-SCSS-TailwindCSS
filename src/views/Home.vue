@@ -1,6 +1,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { Edit, Share, Delete } from '@element-plus/icons-vue'
+
 import { UserService } from '@/services/api'
 
 const users = ref([])
@@ -23,5 +25,8 @@ onMounted(async () => {
     <ul>
       <li v-for="user in users" :key="user.id">{{ user.title }}</li>
     </ul>
+    <el-icon><Edit /></el-icon>
+  <el-icon><Share /></el-icon>
+  <el-icon><Delete /></el-icon>
   </div>
 </template>
