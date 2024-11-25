@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api', // 设置基础URL
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api', // 设置基础URL
   timeout: 15000, // 请求超时时间
   headers: {
     'Content-Type': 'application/json',

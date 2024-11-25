@@ -3,7 +3,7 @@
     :class="{ dark: isDark }"
     class="app-container bg-[#f6f9ff] dark:bg-gray-900 transition-colors duration-200 ease-in-out"
   >
-    <Headerview v-if="token" id="header" />
+    <Headerview v-if="token" id="header" class="header" />
     <div class="content-wrapper">
       <main id="main" class="main-content">
         <router-view v-slot="{ Component }">
@@ -81,9 +81,12 @@ watch(
   flex-direction: column;
 }
 
-
+.header {
+  height: 8vh; // 与 Header.vue 中的高度一致
+}
 
 .content-wrapper {
+  padding-top: 8vh; // 为固定定位的 header 腾出空间
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -96,8 +99,8 @@ watch(
   
 }
 
-#header{
-  // height: 16vh;
+.footer {
+  // 如果需要，在这里添加 footer 的样式
 }
 
 .dark {

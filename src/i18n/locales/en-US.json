@@ -1,12 +1,41 @@
 {
     "hello": "Hello",
     "welcome": "Welcome to Vue 3 + i18n",
+    "title":"xxx",
     "route": {
     "home": {
-      "title": "Home - My Vue App"
+      "title": "Home"
     },
-    "about": {
-      "title": "About Us - My Vue App"
+    "cource": {
+      "title": "Course"
+    },
+    "components":{
+      "title":"Components"
+    },
+    "help-center":{
+      "title":"Help-center"
+    },
+    "login": {
+      "title": "Login"
     }
-  }
+  } ,
+  "footer":{
+    "title":"xxx科技股份有限公司 © 2024",
+    "entitle":"xxx Technology Co, Ltd. © 2024"
+  },
+  "login":{
+"title":"xxx login",
+"username": "user name",
+"password": "password",
+"submit": "login"
+
+  },
+  "message":{
+"Success":"Login successful",
+"Error":"Login failed",
+"LoginOut":"Logout successful"
+
+},
+  "Please_enter":"Please enter...",
+  "LoginOut":"LoginOut"
   }

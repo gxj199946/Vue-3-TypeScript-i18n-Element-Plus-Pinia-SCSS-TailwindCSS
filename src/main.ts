@@ -12,6 +12,7 @@ import i18n from './i18n'
 import { initLanguage } from './utils/languageUtils'
 import { useThemeStore } from './stores/themeStore'
 import { lightenColor, darkenColor } from './utils/colorUtils'
+import preventRightClick from './directives/preventRightClick';
 import './styles/themes.css'
 import './index.css'
 
@@ -36,5 +37,5 @@ app.use(router)
 app.provide('themeStore', themeStore)
 app.provide('lightenColor', lightenColor)
 app.provide('darkenColor', darkenColor)
-
+app.directive('prevent-right-click', preventRightClick)
 app.mount('#app')

@@ -1,12 +1,40 @@
 {
     "hello": "你好",
     "welcome": "欢迎使用 Vue 3 + i18n",
+    "title":"xxx",
     "route": {
       "home": {
-        "title": "首页 - 我的 Vue 应用"
+        "title": "首页"
       },
-      "about": {
-        "title": "关于我们 - 我的 Vue 应用"
+      "cource": {
+        "title": "课程"
+      },
+      "components":{
+        "title":"组件"
+      },
+      "help-center":{
+        "title":"帮助中心"
+      },
+      "login": {
+        "title": "登录"
       }
-    }
+    },
+    "footer":{
+      "title":"xxx 股份有限公司 © 2024",
+    "entitle":"xxx Technology Co, Ltd. © 2024"
+    },
+    "login":{
+      "title":"xxx 登录",
+      "username": "用户名",
+      "password": "密码",
+      "submit": "登录"
+
+    },
+    "message":{
+      "Success":"登录成功",
+      "Error":"登录失败",
+      "LoginOut":"成功退出"
+    },
+    "Please_enter":"请输入...",
+    "LoginOut":"退出"
   }
