@@ -12,7 +12,7 @@ export default defineConfig({
   server:{
     proxy: {
       '/api': {
-        target: 'http://localhost:3000', // 后端 API 地址
+        target: 'https://4wso1r5il4.execute-api.cn-northwest-1.amazonaws.com.cn', // 后端 API 地址
         changeOrigin: true, // 是否改变请求头中的 origin
         rewrite: (path) => path.replace(/^\/api/, '') // 重写路径
       }

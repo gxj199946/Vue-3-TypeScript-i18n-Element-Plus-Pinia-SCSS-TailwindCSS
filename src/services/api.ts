@@ -18,14 +18,17 @@ export const ApiService = {
   }
 }
 
-// 你可以为特定的 API 端点创建服务
+//用户服务
 export const UserService = {
-  getCourses() {
-    return ApiService.get('/courses')
+  AuthpublicKey() {
+    return ApiService.get('/api/auth/publicKey')
   },
-//   getUserById(id: number) {
-//     return ApiService.get(`/users/${id}`)
-//   },
+  AuthLogin(data: any) {
+    return ApiService.post('/api/auth/login', data)
+  },
+  AuthRegister(data:any){
+    return ApiService.post('/api/auth/register',data)
+  }
   // 添加更多用户相关的方法...
 }
 

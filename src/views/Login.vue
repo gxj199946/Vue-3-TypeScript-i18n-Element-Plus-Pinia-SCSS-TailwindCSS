@@ -62,7 +62,7 @@ const handleSubmit = async () => {
   error.value = "";
   try {
     const response = await fetch("/api/login", {
-      // 替换为您的登录API端点
+      // 替换为登录API端点
       method: "POST",
       headers: {
         "Content-Type": "application/json",

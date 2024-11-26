@@ -1,13 +1,29 @@
 <template>
   <div class="nav_box">
     &nbsp;&nbsp;
-    <div>学生</div>
+    <div
+      @click="handlePageHome('UserHome')"
+      :class="{ active: HomeUiStore.page === 'UserHome' }"
+    >
+      学生
+    </div>
     &nbsp;&nbsp;
-    <div>学校</div>
+    <div
+      @click="handlePageHome('SchoolHome')"
+      :class="{ active: HomeUiStore.page === 'SchoolHome' }"
+    >
+      学校
+    </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import {useHomeUiStore} from "@/stores/homeuiStore";
+const HomeUiStore = useHomeUiStore();
+const handlePageHome = (Page) => {
+  HomeUiStore.PageUiAction(Page);
+};
+</script>
 
 <style lang="scss" scoped>
 .nav_box {
@@ -16,5 +32,14 @@
   display: flex;
   background: #000;
   color: #fff;
+
+  div {
+    cursor: pointer;
+    padding: 0 10px;
+
+    &.active {
+      color: #your-active-color; // 可以设置选中状态的样式
+    }
+  }
 }
 </style>

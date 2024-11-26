@@ -3,13 +3,14 @@
     :class="{ dark: isDark }"
     class="app-container bg-[#f6f9ff] dark:bg-gray-900 transition-colors duration-200 ease-in-out"
   >
-    <Headerview v-if="token" id="header" />
+    <Headerview  id="header" />
     <div class="content-wrapper">
       <main id="main" class="main-content">
         <router-view v-slot="{ Component }">
           <component :is="Component" />
         </router-view>
-        
+        <LoginModal ref="loginModalRef" @login-success="handleLoginSuccess" />
+
       </main>
 
       <Footerview id="footer" class="footer" />
@@ -22,20 +23,39 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, watch,ref } from "vue";
 import Headerview from "@/components/Header.vue"
 import Footerview from "@/components/Footer.vue"
 import { useThemeStore } from "@/stores/themeStore";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
 import { useLanguageStore } from "@/stores/languageStore";
-import { useRoute } from "vue-router";
+import { useRoute,useRouter } from "vue-router";
+import { useAuthStore } from '@/stores/auth'
+import LoginModal from '@/components/login/LoginModal.vue'
 
 const { t, locale } = useI18n();
 const languageStore = useLanguageStore();
 const themeStore = useThemeStore();
 const { isDark } = storeToRefs(themeStore);
 const route = useRoute();
+const router=useRouter()
+const authStore = useAuthStore()
+const loginModalRef = ref()
+// 处理登录成功
+const handleLoginSuccess = () => {
+  authStore.setShowLoginModal(false)
+  // 清除 URL 中的 authMode 参数
+  if (router.currentRoute.value.query.authMode) {
+    const query = { ...router.currentRoute.value.query }
+    delete query.authMode
+    router.replace({ 
+      path: router.currentRoute.value.path, 
+      query 
+    })
+  }
+}
+
 const token = localStorage.getItem('token'); // 从 localStorage 获取 token
 
 // 在组件挂载时初始化语言
@@ -43,6 +63,7 @@ onMounted(() => {
   languageStore.initLanguage();
 });
 
+//更新title
 const updateTitle = (title: string, website_title: string) => {
   document.title = `${website_title} | ${title}`;
 };

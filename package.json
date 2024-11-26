@@ -21,6 +21,7 @@
     "d3": "^7.9.0",
     "docx-preview": "^0.3.3",
     "element-plus": "^2.8.5",
+    "jsencrypt": "^3.3.2",
     "lodash": "^4.17.21",
     "mammoth": "^1.8.0",
     "markdown-it": "^14.1.0",

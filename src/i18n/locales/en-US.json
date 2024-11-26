@@ -27,9 +27,20 @@
 "title":"xxx login",
 "username": "user name",
 "password": "password",
-"submit": "login"
+"submit": "login",
+"usernamePlaceholder": "Please enter your username",
+"passwordPlaceholder": "Please enter your password",
+"rememberMe": "Remember me",
+"forgotPassword": "Forgot your password?",
+"usernameRequired": "Please enter your username",
+"passwordRequired": "Please enter your password",
+"usernameLength": "The username must be at least 3 characters long",
+"passwordLength": "The password must be at least 6 characters long"
 
   },
+  "common": {
+"cancel": "Cancel"
+},
   "message":{
 "Success":"Login successful",
 "Error":"Login failed",

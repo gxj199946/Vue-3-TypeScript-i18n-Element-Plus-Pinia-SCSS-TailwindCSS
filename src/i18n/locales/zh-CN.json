@@ -27,8 +27,19 @@
       "title":"xxx 登录",
       "username": "用户名",
       "password": "密码",
-      "submit": "登录"
+      "submit": "登录",
+      "usernamePlaceholder": "请输入用户名",
+      "passwordPlaceholder": "请输入密码",
+      "rememberMe": "记住我",
+      "forgotPassword": "忘记密码？",
+      "usernameRequired": "请输入用户名",
+      "passwordRequired": "请输入密码",
+      "usernameLength": "用户名长度至少3个字符",
+      "passwordLength": "密码长度至少6个字符"
 
+    },
+    "common": {
+      "cancel": "取消"
     },
     "message":{
       "Success":"登录成功",

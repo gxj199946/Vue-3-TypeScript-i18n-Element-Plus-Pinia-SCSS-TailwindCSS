@@ -5,7 +5,6 @@
       <NavView/> 
     </div>
     <div class="header">
-      <!-- flex: 4 -->
       <router-link
       to="/"
       style="flex: 6; padding-left: 4vw"
@@ -30,7 +29,6 @@
         :predefinedQuestions="predefinedQuestions"
       />
     </div>
-    <!-- flex: 4; justify-end-->
     <div style="flex: 4" class="nav flex items-center text-2xl">
       <nav
         v-for="(i, v) in routes"
@@ -47,7 +45,12 @@
         </router-link>
       </nav>
     </div>
-    <div style="flex: 2" class="flex justify-end items-center pr-4">
+    <!-- <div style="flex:6">
+      <UserHeaderView v-if="HomeUiStore.page=='UserHome'"/>
+      <SchoolHeaderView v-if="HomeUiStore.page=='SchoolHome'"/>
+    </div> -->
+    <div style="flex: 3" class="flex justify-end items-center pr-4">
+      
       <!-- 语言切换组件 -->
       <LanguageSwitch />
       <!-- 主题切换组件 -->
@@ -81,6 +84,14 @@
           </span>
         <span>{{ $t("LoginOut") }}</span>
       </div>
+      <div v-else>
+        <el-button @click="showLogin">
+        登录
+      </el-button>
+      <el-button>
+        免费加入
+      </el-button>
+      </div>
     </div>
   </div>
   </div>
@@ -99,16 +110,22 @@ import { storeToRefs } from "pinia";
 import { useThemeStore } from "@/stores/themeStore";
 import { useLanguageStore } from "@/stores/languageStore";
 import { useRouter, useRoute } from "vue-router";
+import {useHomeUiStore} from "@/stores/homeuiStore";
+import SchoolHeaderView from "@/components/home-ui/School-Header.vue";
+import UserHeaderView from '@/components/home-ui/User-Header.vue';
+import { useAuthStore } from '@/stores/auth'
 import { useI18n } from "vue-i18n";
-import { computed, ref, watch, onMounted, onUnmounted } from "vue";
-
+import { computed, ref, watch, onMounted, onUnmounted ,defineAsyncComponent} from "vue";
+const HomeUiStore = useHomeUiStore();
 const { t} = useI18n();
 const router = useRouter();
 const route = useRoute();
 const themeStore = useThemeStore();
 const languageStore = useLanguageStore();
+const authStore=useAuthStore()
 const { isDark } = storeToRefs(themeStore);
 const { currentLang } = storeToRefs(languageStore);
+
 const token = localStorage.getItem('token'); // 从 localStorage 获取 token
 // 获取路由数组,截取前3个作为导航路由
 const routes = computed(() => router.options.routes.slice(0, 3));
@@ -149,6 +166,19 @@ updatePredefinedQuestions();
 watch(currentLang, () => {
   updatePredefinedQuestions();
 });
+
+//点击弹出登录model框
+const showLogin = () => {
+  console.log(router);
+  
+  authStore.setShowLoginModal(true)
+    // 添加查询参数
+    const currentRoute = router.currentRoute.value;
+  router.replace({ 
+    path: currentRoute.path,
+    query: { ...currentRoute.query, authMode: 'login' }
+  });
+}
 //退出登录
 const Login_out = async () => {
   console.log("退出登录")
@@ -158,7 +188,8 @@ const Login_out = async () => {
       message: t("message.LoginOut"),
       type: "success",
     });
-  window.location.href = "/login";
+  // window.location.href = "/login";
+  router.go(0)
   } 
 
 const isFixed = ref(false);
@@ -254,7 +285,6 @@ onUnmounted(() => {
 }
 
 .Title {
-  // font-size: 1.5vw;
   font-size: 1.4vw;
   font-weight: 600;
 }
