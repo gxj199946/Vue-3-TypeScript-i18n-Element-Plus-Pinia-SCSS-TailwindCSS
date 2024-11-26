@@ -75,8 +75,10 @@ router.beforeEach((to, from, next) => {
   }
   
   if (to.meta.requiresAuth) {
-    const token = localStorage.getItem('token')
-    if (!token) {
+    const auth = JSON.parse(localStorage.getItem('auth')!);
+    console.log(auth);
+    
+    if (!auth?.token) {      
       // 先添加查询参数
       router.replace({ 
         path: from.path,
@@ -88,9 +90,11 @@ router.beforeEach((to, from, next) => {
       next(false)
       return
     }
+    console.log('已登录',auth?.token);
+    
   }
   next()
-  
+
   // if (to.meta.requiresAuth) {
   //   const token = localStorage.getItem('token')
   //   if (!token && !authStore.isAuthenticating) {

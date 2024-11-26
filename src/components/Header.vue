@@ -126,7 +126,7 @@ const authStore=useAuthStore()
 const { isDark } = storeToRefs(themeStore);
 const { currentLang } = storeToRefs(languageStore);
 
-const token = localStorage.getItem('token'); // 从 localStorage 获取 token
+const token = authStore.$state.token
 // 获取路由数组,截取前3个作为导航路由
 const routes = computed(() => router.options.routes.slice(0, 3));
 
@@ -169,7 +169,7 @@ watch(currentLang, () => {
 
 //点击弹出登录model框
 const showLogin = () => {
-  console.log(router);
+  // console.log(router);
   
   authStore.setShowLoginModal(true)
     // 添加查询参数
@@ -182,7 +182,7 @@ const showLogin = () => {
 //退出登录
 const Login_out = async () => {
   console.log("退出登录")
-  localStorage.removeItem("token");
+  localStorage.removeItem("auth");
   ElNotification({
       title: "Success",
       message: t("message.LoginOut"),

@@ -12,10 +12,10 @@
     <div class="login-container">
       <div class="login-header mb-6 text-center">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
-          {{ $t('login.welcomeBack') }}
+          {{ $t("login.welcomeBack") }}
         </h2>
         <p class="text-gray-600 dark:text-gray-400 mt-2">
-          {{ $t('login.pleaseLogin') }}
+          {{ $t("login.pleaseLogin") }}
         </p>
       </div>
 
@@ -57,15 +57,12 @@
         </div>
 
         <div class="flex justify-end gap-3">
-          <el-button 
-            @click="handleClose"
-            class="cancel-btn"
-          >
+          <el-button @click="handleClose" class="cancel-btn">
             {{ $t("common.cancel") }}
           </el-button>
-          <el-button 
-            type="primary" 
-            :loading="loading" 
+          <el-button
+            type="primary"
+            :loading="loading"
             @click="handleSubmit"
             class="submit-btn"
           >
@@ -78,20 +75,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch ,onUnmounted} from "vue";
 import { useI18n } from "vue-i18n";
 import { ElNotification, FormInstance } from "element-plus";
 import { useRouter } from "vue-router";
 import { User, Lock } from "@element-plus/icons-vue";
 import { ulid } from "ulidx";
 import JSEncrypt from "jsencrypt";
+import forge from 'node-forge'
 import { useAuthStore } from "@/stores/auth";
 import { UserService } from "@/services/api";
 const { t } = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
 const formRef = ref<FormInstance>();
-const visible = ref(false);
+const visible = ref(authStore.showLoginModal);
 const loading = ref(false);
 
 // 表单数据
@@ -120,7 +118,6 @@ watch(
     visible.value = show;
   }
 );
-
 // 打开登录框
 const openLogin = () => {
   authStore.setShowLoginModal(true);
@@ -133,36 +130,44 @@ const handleSubmit = async () => {
 
   await formRef.value.validate(async (valid) => {
     if (!valid) return;
-
     loading.value = true;
     try {
+      let pubKey:any=""
       // 1. 先获取服务器的公钥
-      const publicKey = await UserService.AuthpublicKey();
-      // 2. 创建 JSEncrypt 实例
-      const encrypt = new JSEncrypt();
-      // 3. 设置公钥并加密
-      encrypt.setPublicKey(publicKey?.publicKey);
-      const encryptedPassword = encrypt.encrypt(formData.password);
-      console.log(encryptedPassword);
-      
-      // 4. 构建登录请求数据
+      //判断本地是否有publicKey
+      if(authStore.$state.publicKey){
+        pubKey=authStore.$state.publicKey
+      }else{
+        pubKey= await UserService.AuthpublicKey();
+        //缓存到pinia
+      authStore.publicKeyAuth(pubKey?.publicKey)
+      }
+      //2.将 base64 编码的公钥转换为 forge 公钥对象
+      const publicKey =forge.pki.publicKeyFromPem(pubKey?.publicKey)
+      //3.加密
+      const encrypted=publicKey.encrypt(formData.password,'RSA-OAEP',{
+        md:forge.md.sha256.create(),
+        mgf1:{
+          md: forge.md.sha256.create(),
+        }
+      })
+      //4.转换为base64
+      const encryptedPassword=forge.util.encode64(encrypted)
+      console.log('转换后',encryptedPassword);
+
+      // 5.构建登录请求数据
       const loginData = {
         username: formData.username,
         password: encryptedPassword, // 使用加密后的密码
-      };      
+      };
+      //5.请求登录
       const response = await UserService.AuthLogin(loginData);
       console.log(response);
 
-      if (!response.ok) {
-        const data = await response.json();
-        ElNotification({
-          title: "Error",
-          message: data.message || t("message.Error"),
-          type: "error",
-        });
-      } else {
-        const data = await response.json();
-        console.log("登录成功", data);
+      if (response?.token) {
+        console.log("登录成功", response);
+        //缓存token
+        authStore.TokenAuth(response.token)
 
         ElNotification({
           title: "Success",
@@ -170,7 +175,6 @@ const handleSubmit = async () => {
           type: "success",
         });
 
-        // localStorage.setItem('token', JSON.stringify(data?.token))
 
         // 如果选择了记住我，可以保存用户名
         if (formData.remember) {
@@ -178,19 +182,24 @@ const handleSubmit = async () => {
         }
 
         // 调用登录成功处理方法
-        // authStore.handleLoginSuccess();
+        authStore.startAuth();
 
         // // 登录成功后
-        // emit("login-success");
+        emit("login-success");
 
-        // visible.value = false;
+        visible.value = false;
         // // router.push('/')
-        // router.go(0);
+        router.go(0);
+      } else {
+            ElNotification({
+          title: "Error",
+          message: response.message || t("message.Error"),
+          type: "error",
+        });
       }
     } catch (err) {
-      // 测试用
-      // localStorage.setItem("token", JSON.stringify(ulid()));
-      // window.location.href = '/'
+      console.log(err);
+
       //重新加载当前路由
       // router.go(0);
     } finally {
@@ -204,7 +213,7 @@ const handleClose = async () => {
   // 先清除 URL 中的查询参数
   const currentRoute = router.currentRoute.value;
   if (currentRoute.query.authMode) {
-    await router.replace({ 
+    await router.replace({
       path: currentRoute.path,
       query: Object.fromEntries(
         Object.entries(currentRoute.query)
@@ -212,7 +221,7 @@ const handleClose = async () => {
       )
     });
   }
-  
+
   // 然后关闭模态框
   authStore.setShowLoginModal(false);
 };
@@ -287,7 +296,7 @@ defineExpose({
 .forgot-password {
   font-size: 0.875rem;
   color: #3b82f6;
-  
+
   &:hover {
     color: #2563eb;
   }
@@ -298,7 +307,7 @@ defineExpose({
   border-color: #3b82f6;
   padding: 10px 24px;
   font-weight: 500;
-  
+
   &:hover {
     background-color: #2563eb;
     border-color: #2563eb;

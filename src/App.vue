@@ -56,7 +56,7 @@ const handleLoginSuccess = () => {
   }
 }
 
-const token = localStorage.getItem('token'); // 从 localStorage 获取 token
+const auth = localStorage.getItem('auth'); // 从 localStorage 获取 token
 
 // 在组件挂载时初始化语言
 onMounted(() => {
