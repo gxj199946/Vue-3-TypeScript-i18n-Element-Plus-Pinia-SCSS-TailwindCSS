@@ -59,5 +59,8 @@
       "RegisterError": "注册失败"
     },
     "Please_enter":"请输入...",
-    "LoginOut":"退出"
+    "LoginOut":"退出",
+    "Download":"下载",
+    "started":"下载已开始",
+    "unavailable":"链接不可用"
   }

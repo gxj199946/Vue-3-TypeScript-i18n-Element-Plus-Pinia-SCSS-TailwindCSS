@@ -60,5 +60,8 @@
 
 },
   "Please_enter":"Please enter...",
-  "LoginOut":"LoginOut"
+  "LoginOut":"LoginOut",
+  "Download":"Download",
+  "started":"Download started",
+"unavailable":"Link unavailable"
   }
