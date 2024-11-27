@@ -19,6 +19,10 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]  // 注意这里，应该是 "./src/*" 而不是 ".src/*"
-    }
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/pdfjs-dist/types"
+    ]
   }
 }
