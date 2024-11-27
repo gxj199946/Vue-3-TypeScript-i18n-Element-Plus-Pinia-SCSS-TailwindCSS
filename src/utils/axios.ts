@@ -14,7 +14,8 @@ instance.interceptors.request.use(
   (config) => {
     // 在发送请求之前做些什么
     // 例如，添加认证令牌
-    const token = localStorage.getItem('token')
+    const auth = localStorage.getItem('auth')
+    const token=auth?.token;
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }

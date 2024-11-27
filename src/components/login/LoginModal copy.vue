@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="visible"
-    :title="isLogin ? $t('login.title') : $t('register.title')"
+    :title="$t('login.title')"
     width="400px"
     :close-on-click-modal="false"
     :show-close="true"
@@ -12,12 +12,10 @@
     <div class="login-container">
       <div class="login-header mb-6 text-center">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
-          {{ isLogin ? $t("login.welcomeBack") : $t("register.welcome") }}
+          {{ $t("login.welcomeBack") }}
         </h2>
         <p class="text-gray-600 dark:text-gray-400 mt-2">
-          {{
-            isLogin ? $t("login.pleaseLogin") : $t("register.pleaseRegister")
-          }}
+          {{ $t("login.pleaseLogin") }}
         </p>
       </div>
 
@@ -27,7 +25,6 @@
         :rules="rules"
         label-position="top"
         @submit.prevent="handleSubmit"
-         @keyup.enter="handleSubmit"
         class="login-form"
       >
         <el-form-item :label="$t('login.username')" prop="username">
@@ -44,7 +41,6 @@
             v-model="formData.password"
             type="password"
             :placeholder="$t('login.passwordPlaceholder')"
-            @keyup.enter="handleSubmit"
             prefix-icon="Lock"
             show-password
             class="login-input"
@@ -52,24 +48,17 @@
         </el-form-item>
 
         <div class="flex justify-between items-center mb-6">
-          <el-checkbox
-            v-if="isLogin"
-            v-model="formData.remember"
-            class="remember-me"
-          >
+          <el-checkbox v-model="formData.remember" class="remember-me">
             {{ $t("login.rememberMe") }}
           </el-checkbox>
-          <el-link v-if="isLogin" type="primary" class="forgot-password">
+          <el-link type="primary" class="forgot-password">
             {{ $t("login.forgotPassword") }}
           </el-link>
         </div>
+        <div class="flex justify-end">
+          <el-button >去注册</el-button>
 
-        <div class="flex justify-end mb-4">
-          <el-button link type="primary" @click="toggleMode">
-            {{ isLogin ? $t("login.goToRegister") : $t("register.goToLogin") }}
-          </el-button>
         </div>
-
         <div class="flex justify-end gap-3">
           <el-button @click="handleClose" class="cancel-btn">
             {{ $t("common.cancel") }}
@@ -80,7 +69,7 @@
             @click="handleSubmit"
             class="submit-btn"
           >
-            {{ isLogin ? $t("login.submit") : $t("register.submit") }}
+            {{ $t("login.submit") }}
           </el-button>
         </div>
       </el-form>
@@ -89,14 +78,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, onUnmounted } from "vue";
+import { ref, reactive, watch ,onUnmounted} from "vue";
 import { useI18n } from "vue-i18n";
 import { ElNotification, FormInstance } from "element-plus";
 import { useRouter } from "vue-router";
 import { User, Lock } from "@element-plus/icons-vue";
 import { ulid } from "ulidx";
 import JSEncrypt from "jsencrypt";
-import forge from "node-forge";
+import forge from 'node-forge'
 import { useAuthStore } from "@/stores/auth";
 import { UserService } from "@/services/api";
 const { t } = useI18n();
@@ -105,7 +94,6 @@ const authStore = useAuthStore();
 const formRef = ref<FormInstance>();
 const visible = ref(authStore.showLoginModal);
 const loading = ref(false);
-const isLogin = ref(true);
 
 // 表单数据
 const formData = reactive({
@@ -139,34 +127,7 @@ const openLogin = () => {
 };
 const emit = defineEmits(["login-success"]);
 
-// 切换登录/注册模式
-const toggleMode = () => {
-  isLogin.value = !isLogin.value;
-  formRef.value?.resetFields();
-};
-
-//加密密码
-const ForgePublicKey_util = async (password: any) => {
-  try {
-    // 1. 先获取服务器的公钥
-    const pubKey = await UserService.AuthpublicKey();
-    //2.将 base64 编码的公钥转换为 forge 公钥对象
-    const publicKey = forge.pki.publicKeyFromPem(pubKey?.publicKey);
-    //3.加密
-    const encrypted = publicKey.encrypt(password, "RSA-OAEP", {
-      md: forge.md.sha256.create(),
-      mgf1: {
-        md: forge.md.sha256.create(),
-      },
-    });
-    //4.转换为base64 并返回
-    return forge.util.encode64(encrypted);
-  } catch (error) {
-    console.error("Password encryption failed:", error);
-    throw error;
-  }
-};
-// 修改提交处理
+// 提交表单
 const handleSubmit = async () => {
   if (!formRef.value) return;
 
@@ -174,81 +135,76 @@ const handleSubmit = async () => {
     if (!valid) return;
     loading.value = true;
     try {
-      if (isLogin.value) {
-        // 原有的登录逻辑
-        const encryptedPassword = await ForgePublicKey_util(formData.password);
-        // 5.构建登录请求数据
-        const loginData = {
-          username: formData.username,
-          password: encryptedPassword, // 使用加密后的密码
-        };
-        //5.请求登录
-        const response = await UserService.AuthLogin(loginData);
-        console.log(response);
-
-        if (response && response?.token) {
-          console.log("登录成功", response);
-          //缓存token
-          authStore.TokenAuth(response.token);
-
-          ElNotification({
-            title: "Success",
-            message: t("message.Success"),
-            type: "success",
-          });
-
-          // 如果选择了记住我，可以保存用户名
-          if (formData.remember) {
-            localStorage.setItem("rememberedUsername", formData.username);
-          }
-
-          // 调用登录成功处理方法
-          authStore.startAuth();
-
-          // // 登录成功后
-          emit("login-success");
-
-          visible.value = false;
-          // // router.push('/')
-          router.go(0);
-        } else {
-          ElNotification({
-            title: "Error",
-            message: response.message || t("message.Error"),
-            type: "error",
-          });
+      let pubKey:any=""
+      // 1. 先获取服务器的公钥
+      //判断本地是否有publicKey
+      if(authStore.$state.publicKey){
+        pubKey=authStore.$state.publicKey
+      }else{
+        pubKey= await UserService.AuthpublicKey();
+        //缓存到pinia
+      authStore.publicKeyAuth(pubKey?.publicKey)
+      }
+      //2.将 base64 编码的公钥转换为 forge 公钥对象
+      const publicKey =forge.pki.publicKeyFromPem(pubKey?.publicKey)
+      //3.加密
+      const encrypted=publicKey.encrypt(formData.password,'RSA-OAEP',{
+        md:forge.md.sha256.create(),
+        mgf1:{
+          md: forge.md.sha256.create(),
         }
+      })
+      //4.转换为base64
+      const encryptedPassword=forge.util.encode64(encrypted)
+      console.log('转换后',encryptedPassword);
+
+      // 5.构建登录请求数据
+      const loginData = {
+        username: formData.username,
+        password: encryptedPassword, // 使用加密后的密码
+      };
+      //5.请求登录
+      const response = await UserService.AuthLogin(loginData);
+      console.log(response);
+
+      if (response?.token) {
+        console.log("登录成功", response);
+        //缓存token
+        authStore.TokenAuth(response.token)
+
+        ElNotification({
+          title: "Success",
+          message: t("message.Success"),
+          type: "success",
+        });
+
+
+        // 如果选择了记住我，可以保存用户名
+        if (formData.remember) {
+          localStorage.setItem("rememberedUsername", formData.username);
+        }
+
+        // 调用登录成功处理方法
+        authStore.startAuth();
+
+        // // 登录成功后
+        emit("login-success");
+
+        visible.value = false;
+        // // router.push('/')
+        router.go(0);
       } else {
-        // 注册逻辑
-        
-        const encryptedPassword = await ForgePublicKey_util(formData.password);
-        const registerData = {
-          username: formData.username,
-          password: encryptedPassword,
-        };
-
-        const response = await UserService.AuthRegister(registerData);
-        console.log(response);
-
-        if (response && response.message) {
-          ElNotification({
-            title: "Success",
-            message: t("message.RegisterSuccess"),
-            type: "success",
-          });
-          // 注册成功后切换到登录
-          isLogin.value = true;
-          formRef.value?.resetFields();
-        } else {
-          ElNotification({
-            title: "Error",
-            message: response.message || t("message.RegisterError"),
-            type: "error",
-          });
-        }
+            ElNotification({
+          title: "Error",
+          message: response.message || t("message.Error"),
+          type: "error",
+        });
       }
     } catch (err) {
       console.log(err);
+
+      //重新加载当前路由
+      // router.go(0);
     } finally {
       loading.value = false;
     }
@@ -263,8 +219,9 @@ const handleClose = async () => {
     await router.replace({
       path: currentRoute.path,
       query: Object.fromEntries(
-        Object.entries(currentRoute.query).filter(([key]) => key !== "authMode")
-      ),
+        Object.entries(currentRoute.query)
+          .filter(([key]) => key !== 'authMode')
+      )
     });
   }
 

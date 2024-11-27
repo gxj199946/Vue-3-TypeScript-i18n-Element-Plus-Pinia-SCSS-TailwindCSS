@@ -28,6 +28,9 @@
 "username": "user name",
 "password": "password",
 "submit": "login",
+"welcomeBack":"welcomeBack",
+"pleaseLogin":"pleaseLogin",
+"goToLogin": "Already have an account? Go to login",
 "usernamePlaceholder": "Please enter your username",
 "passwordPlaceholder": "Please enter your password",
 "rememberMe": "Remember me",
@@ -38,13 +41,22 @@
 "passwordLength": "The password must be at least 6 characters long"
 
   },
+  "register": {
+"title": "Register",
+"welcome": "Welcome to join",
+"pleaseRegister": "Please fill in the registration information",
+"submit": "Register",
+"goToLogin": "Already have an account? Go to log in"
+},
   "common": {
 "cancel": "Cancel"
 },
   "message":{
 "Success":"Login successful",
 "Error":"Login failed",
-"LoginOut":"Logout successful"
+"LoginOut":"Logout successful",
+"RegisterSuccess": "Registration successful",
+"RegisterError": "Registration failed"
 
 },
   "Please_enter":"Please enter...",

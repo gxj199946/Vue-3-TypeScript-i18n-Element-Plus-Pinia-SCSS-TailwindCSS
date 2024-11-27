@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw, useRouter } from 'vue-router'
 import i18n from '@/i18n' // 导入你的 i18n 实例
 import { useAuthStore } from '@/stores/auth'
+import { UserService } from "@/services/api";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -67,7 +68,7 @@ const publicPaths: string[] = ['/login', '/register'];
 
 
 // 添加全局前置守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
     if (to.meta.titleKey) {
     const title = i18n.global.t(to.meta.titleKey as string)
@@ -75,9 +76,7 @@ router.beforeEach((to, from, next) => {
   }
   
   if (to.meta.requiresAuth) {
-    const auth = JSON.parse(localStorage.getItem('auth')!);
-    console.log(auth);
-    
+    const auth = JSON.parse(localStorage.getItem('auth')!);    
     if (!auth?.token) {      
       // 先添加查询参数
       router.replace({ 
@@ -90,23 +89,26 @@ router.beforeEach((to, from, next) => {
       next(false)
       return
     }
-    console.log('已登录',auth?.token);
+    const MeInFo=await UserService.MeInfo(auth?.token)
+    if(MeInFo && MeInFo?.id){
+      // console.log(MeInFo);
+      console.log('已登录');
+    }else{
+      // 添加查询参数
+      router.replace({ 
+        path: from.path,
+        query: { ...from.query, authMode: 'login' }
+      })
+      // 然后显示登录框
+      authStore.startAuth()
+      // 阻止导航
+      next(false)
+      return
+    }
     
   }
   next()
 
-  // if (to.meta.requiresAuth) {
-  //   const token = localStorage.getItem('token')
-  //   if (!token && !authStore.isAuthenticating) {
-  //     authStore.startAuth()
-  //     next({
-  //       path: to.path,
-  //       query: { ...to.query, authMode: 'login' }
-  //     })
-  //     return
-  //   }
-  // }
-  // next()
 })
 
 export default router

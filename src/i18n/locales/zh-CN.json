@@ -28,6 +28,9 @@
       "username": "用户名",
       "password": "密码",
       "submit": "登录",
+      "welcomeBack":"欢迎回来",
+      "pleaseLogin":"请登录",
+      "goToRegister": "没有账号？去注册",
       "usernamePlaceholder": "请输入用户名",
       "passwordPlaceholder": "请输入密码",
       "rememberMe": "记住我",
@@ -38,13 +41,22 @@
       "passwordLength": "密码长度至少6个字符"
 
     },
+    "register": {
+    "title": "注册",
+    "welcome": "欢迎加入",
+    "pleaseRegister": "请填写注册信息",
+    "submit": "注册",
+    "goToLogin": "已有账号？去登录"
+  },
     "common": {
       "cancel": "取消"
     },
     "message":{
       "Success":"登录成功",
       "Error":"登录失败",
-      "LoginOut":"成功退出"
+      "LoginOut":"成功退出",
+      "RegisterSuccess": "注册成功",
+      "RegisterError": "注册失败"
     },
     "Please_enter":"请输入...",
     "LoginOut":"退出"

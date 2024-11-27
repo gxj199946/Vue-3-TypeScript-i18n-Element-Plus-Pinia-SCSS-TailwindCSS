@@ -28,6 +28,11 @@ export const UserService = {
   },
   AuthRegister(data:any){
     return ApiService.post('/api/auth/register',data)
+  },
+  MeInfo(token:any){
+    return ApiService.get('/api/me/info',{headers:{
+      'Authorization':`Bearer ${token}`
+    }})
   }
   // 添加更多用户相关的方法...
 }
